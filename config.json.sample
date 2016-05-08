@@ -1,0 +1,21 @@
+{
+  "request": {
+    "currency": "usd",
+    "price[min]": 10000,
+    "price[max]": 50000,
+    "number_of_rooms[]": [2, 3],
+    "walling[]": ["brick", "monolith", "block"],
+    "bounds[lb][lat]": 53.80957154683726,
+    "bounds[lb][long]": 27.455520629882812,
+    "bounds[rt][lat]": 53.985568980647656,
+    "bounds[rt][long]": 27.665977478027344
+  },
+
+  "api_url": "https://pk.api.onliner.by/search/apartments",
+
+  "bots": {
+    "telegram": {
+      "token": "PUT_TELEGRAM_TOKEN_HERE"
+    }
+  }
+}
