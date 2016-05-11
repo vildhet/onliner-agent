@@ -6,21 +6,24 @@ import json
 import logging
 import copy
 import time
-
+import pickle
 
 _bots = []
-APARTMENTS_DB = 'aparments.json'
+APARTMENTS_DB = 'aparments.data'
 
 
 def init_bots(config):
+    logging.info('init all bots')
     from bots import telegram
-    _bots = [telegram]
+    _bots.append(telegram)
 
     for bot in _bots:
         bot.init(config['bots'][bot.get_name()])
 
 
 def send_announce(message):
+    logging.info('sending announce message via all bots: \"%s\"' % message)
+
     for bot in _bots:
         bot.send(message)
 
@@ -30,14 +33,19 @@ def poll_bots():
         bot.poll()
 
 
+def save_bots_states():
+    for bot in _bots:
+        bot.save()
+
+
 def poll_site(config):
     def save(data):
-        json.dump(data, open(APARTMENTS_DB, 'w'))
+        pickle.dump(data, open(APARTMENTS_DB, 'wb'))
 
     def load():
         try:
-            return json.load(open(APARTMENTS_DB, 'r'))
-        except IOError:
+            return pickle.load(open(APARTMENTS_DB, 'rb'))
+        except (IOError, EOFError):
             return []
 
     params = copy.deepcopy(config['request'])
@@ -56,9 +64,9 @@ def poll_site(config):
                 h_a = next((h_a for h_a in h_apparments if h_a['id'] == a['id']), None)
                 if h_a is None:
                     h_apparments.append(a)
-                    send_announce('#{id},"{location[address]}", {created_at}, {url}, {photo}'.format(**a))
+                    send_announce('{photo}, {created_at}, "{location[address]}", {url}, #{id}'.format(**a))
         else:
-            logging.error('invalid response code: %d' % r.status_code)
+            logging.warn('invalid response code: %d' % r.status_code)
             break
 
         params['page'] += 1
@@ -74,14 +82,15 @@ def main(options):
         while True:
             poll_site(config)
             poll_bots()
-            time.sleep(3.000)
-    except KeyboardInterrupt:
+            time.sleep(60.0)
+    except (KeyboardInterrupt):
         logging.info('interrupting service')
+        save_bots_states()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--config", type=str, default="config.json")
     options = parser.parse_args()
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(format="%(asctime)s %(message)s", level=logging.INFO)
     main(options)
