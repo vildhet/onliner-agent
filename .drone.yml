@@ -1,0 +1,7 @@
+build:
+  image: sgoblin/python3.5
+  commands:
+    - pip install -r requirements.txt
+    - python3 poller.py --config config.json.sample &
+    - sleep 10
+    - killall python3
