@@ -1,4 +1,5 @@
 # Description
+[![Build Status](https://drone.io/github.com/denis4net/onliner-agent/status.png)](https://drone.io/github.com/denis4net/onliner-agent/latest)
 Simple rent.onliner.by poller that notify you about new ready-for-sale apartments.
 
 # System dependencies
