@@ -7,35 +7,10 @@ import logging
 import copy
 import time
 import pickle
+import threading
+import bots
 
-_bots = []
 APARTMENTS_DB = 'aparments.data'
-
-
-def init_bots(config):
-    logging.info('init all bots')
-    from bots import telegram
-    _bots.append(telegram)
-
-    for bot in _bots:
-        bot.init(config['bots'][bot.get_name()])
-
-
-def send_announce(message):
-    logging.info('sending announce message via all bots: \"%s\"' % message)
-
-    for bot in _bots:
-        bot.send(message)
-
-
-def poll_bots():
-    for bot in _bots:
-        bot.poll()
-
-
-def save_bots_states():
-    for bot in _bots:
-        bot.save()
 
 
 def poll_site(config):
@@ -64,7 +39,7 @@ def poll_site(config):
                 h_a = next((h_a for h_a in h_apparments if h_a['id'] == a['id']), None)
                 if h_a is None:
                     h_apparments.append(a)
-                    send_announce('{photo}, {created_at}, "{location[address]}", {url}, #{id}'.format(**a))
+                    bots.send_announce('{photo}, USD: {price[usd]}, {created_at}, "{location[address]}", {url}, #{id}'.format(**a))
         else:
             logging.warn('invalid response code: %d' % r.status_code)
             break
@@ -76,17 +51,17 @@ def poll_site(config):
 
 def main(options):
     config = json.load(open(options.config, 'r'))
-    init_bots(config)
+
+    bots.init(config)
+    bots.start()
 
     try:
         while True:
             poll_site(config)
-            poll_bots()
             time.sleep(60.0)
     except (KeyboardInterrupt):
         logging.info('interrupting service')
-        save_bots_states()
-
+        bots.stop()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
