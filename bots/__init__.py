@@ -9,8 +9,10 @@ _events_loop_thread = None
 
 def init(config):
     logging.info('init all bots')
-    from bots import telegram
-    _bots.append(telegram)
+
+    from bots import telegram, vkontakte
+    # _bots.append(telegram)
+    _bots.append(vkontakte)
 
     for bot in _bots:
         bot.init(config['bots'][bot.get_name()])
@@ -45,6 +47,8 @@ def start():
 
     _events_loop_thread = threading.Thread(target=_bots_loop, name="bots events loop")
     _events_loop_thread.start()
+
+    send_announce('service is working now')
 
 
 def stop():

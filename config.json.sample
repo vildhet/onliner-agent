@@ -1,4 +1,4 @@
-{
+,
   "request": {
     "currency": "usd",
     "price[min]": 10000,
@@ -16,6 +16,11 @@
   "bots": {
     "telegram": {
       "token": "PUT_TELEGRAM_TOKEN_HERE"
+    },
+    "vkontakte": {
+      "private_key": "PUT_TOKEN_HERE",
+      "app_id": PUT_APP_ID_HERE,
+      "group_id": PUT_GROUP_ID_HERE
     }
   }
 }
