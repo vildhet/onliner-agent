@@ -11,8 +11,8 @@ def init(config):
     logging.info('init all bots')
 
     from bots import telegram, vkontakte
-    # _bots.append(telegram)
-    _bots.append(vkontakte)
+    _bots.append(telegram)
+    # _bots.append(vkontakte)
 
     for bot in _bots:
         bot.init(config['bots'][bot.get_name()])
