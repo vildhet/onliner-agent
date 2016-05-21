@@ -1,26 +1,46 @@
-,
-  "request": {
-    "currency": "usd",
-    "price[min]": 10000,
-    "price[max]": 50000,
-    "number_of_rooms[]": [2, 3],
-    "walling[]": ["brick", "monolith", "block"],
-    "bounds[lb][lat]": 53.80957154683726,
-    "bounds[lb][long]": 27.455520629882812,
-    "bounds[rt][lat]": 53.985568980647656,
-    "bounds[rt][long]": 27.665977478027344
+{
+  "pollers": {
+    "onliner-sell": {
+      "request": {
+        "currency": "usd",
+        "price[min]": 10000,
+        "price[max]": 45000,
+        "number_of_rooms[]": [2, 3],
+        "walling[]": ["brick", "monolith", "block"],
+        "bounds[lb][lat]": 53.80957154683726,
+        "bounds[lb][long]": 27.455520629882812,
+        "bounds[rt][lat]": 53.985568980647656,
+        "bounds[rt][long]": 27.665977478027344
+      },
+
+      "api_url": "https://pk.api.onliner.by/search/apartments"
+    },
+
+    "onliner-rent": {
+      "request": {
+        "currency": "usd",
+        "price[min]": 100,
+        "price[max]": 450,
+        "rent_type[]": ["2_rooms", "3_rooms"],
+        "bounds[lb][lat]": 53.80957154683726,
+        "bounds[lb][long]": 27.455520629882812,
+        "bounds[rt][lat]": 53.985568980647656,
+        "bounds[rt][long]": 27.665977478027344,
+        "only_owner": "true"
+      },
+
+      "api_url": "https://ak.api.onliner.by/search/apartments"
+    }
   },
-
-  "api_url": "https://pk.api.onliner.by/search/apartments",
-
   "bots": {
     "telegram": {
-      "token": "PUT_TELEGRAM_TOKEN_HERE"
+      "token": "PUT_TOKEN_HERE"
     },
     "vkontakte": {
-      "private_key": "PUT_TOKEN_HERE",
-      "app_id": PUT_APP_ID_HERE,
-      "group_id": PUT_GROUP_ID_HERE
+      "client_secret": "PUT_SECRET_HERE",
+      "app_id": PUT_ID_HERE,
+      "group_id": PUT_ID_HERE
     }
-  }
+  },
+  "storage": "/tmp/estate_agent_settings"
 }

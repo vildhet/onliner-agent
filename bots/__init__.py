@@ -1,58 +1,40 @@
-from . import telegram
-import logging
+from .telegram import TelegramBot
 import threading
-
-_bots = []
-_run_bots_events_loop = True
-_events_loop_thread = None
+import logging
 
 
-def init(config):
-    logging.info('init all bots')
+class EventsLoop(object):
+    def __init__(self, objects):
+        self.objects = objects
+        self.thread = None
+        self.run_events_loop = None
 
-    from bots import telegram, vkontakte
-    _bots.append(telegram)
-    # _bots.append(vkontakte)
+    def loop(self):
+        while self.run_events_loop:
+            for o in self.objects:
+                o.poll()
 
-    for bot in _bots:
-        bot.init(config['bots'][bot.get_name()])
+    def start(self):
+        self.run_events_loop = True
+        self.thread = threading.Thread(target=self.loop, name="bots events loop")
+        self.thread.start()
 
+    def stop(self):
+        self.run_events_loop = False
 
-def send_announce(message):
-    logging.info('sending announce message via all bots: \"%s\"' % message)
+        logging.debug('saving bots state')
+        for o in self.objects:
+            o.save_state()
 
-    for bot in _bots:
-        bot.send(message)
+        if self.thread is not None:
+            logging.debug('stopping events loop')
+            self.thread.join()
+            logging.debug('events loop has been stopped')
 
+        logging.debug('saving bots state')
+        for o in self.objects:
+            o.save_state()
 
-def poll():
-    for bot in _bots:
-        bot.poll()
-
-
-def save_states():
-    for bot in _bots:
-        bot.save()
-
-
-def start():
-    global _run_bots_events_loop
-    global _events_loop_thread
-
-    _run_bots_events_loop = True
-
-    def _bots_loop():
-        while _run_bots_events_loop:
-            poll()
-
-    _events_loop_thread = threading.Thread(target=_bots_loop, name="bots events loop")
-    _events_loop_thread.start()
-
-
-def stop():
-    global _run_bots_events_loop
-    _run_bots_events_loop = False
-    if _events_loop_thread is not None:
-        _events_loop_thread.join()
-
-    save_states()
+    def send_announce(self, message, subscrioption=None):
+        for o in self.objects:
+            o.send(message, subscrioption)

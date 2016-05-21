@@ -1,0 +1,3 @@
+
+class BasePoller(object):
+    pass

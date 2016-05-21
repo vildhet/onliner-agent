@@ -1,37 +1,24 @@
 from vk_api import VkApi
 import logging
-
-# SUBSCRIBERS_DB = "vkontakte.data"
-_api = None
-_group_id = None
+from .base import BaseBot
 
 
-def init(config):
-    global _api
-    global _group_id
+class VkBot(BaseBot):
+    def __init__(self, config, name="vkontakte"):
+        super(VkBot, self).__init__(config, name)
+        logging.info('%s initialization' % self.name)
+        vk_session = VkApi(app_id=config['app_id'], client_secret=config['client_secret'])
 
-    logging.info('%s initialization' % get_name())
-    vk_session = VkApi(app_id=config['app_id'], client_secret=config['client_secret'])
+        vk_session.server_auth()
+        self.api = vk_session.get_api()
+        self.group_id = config['group_id']
 
-    vk_session.server_auth()
-    _api = vk_session.get_api()
-    _group_id = config['group_id']
+    def send(self, message):
+        res = self.api.wall.post(owner_id=-self.group_id, from_group=1, message=message)
+        logging.debug(str(res))
 
+    def save_state(self):
+        pass
 
-def send(message):
-    assert(_api)
-    res = _api.wall.post(owner_id=-_group_id, from_group=1, message=message)
-
-    logging.debug(str(res))
-
-
-def poll():
-    pass
-
-
-def save():
-    pass
-
-
-def get_name():
-    return "vkontakte"
+    def poll(self):
+        pass
