@@ -48,8 +48,6 @@ def start():
     _events_loop_thread = threading.Thread(target=_bots_loop, name="bots events loop")
     _events_loop_thread.start()
 
-    send_announce('service is working now')
-
 
 def stop():
     global _run_bots_events_loop
