@@ -13,7 +13,7 @@ class BaseBot(object):
         return self.config['bots'][self.name]
 
     def list_subscriptions(self):
-        return [s for s in self.config['pollers']]
+        return [s['name'] for s in self.config['pollers']]
 
     @property
     def db_path(self):
