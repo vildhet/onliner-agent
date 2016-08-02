@@ -22,8 +22,7 @@ def main(options):
     if not path.exists(config['storage']):
         os.makedirs(config['storage'])
 
-    pollers = (OnlinerPoller(config, 'onliner-rent'),
-               OnlinerPoller(config, 'onliner-sell'))
+    pollers = [OnlinerPoller(c, config['storage']) for c in config['pollers']]
 
     bots = [TelegramBot(config, 'telegram')]
     ev_loop = EventsLoop(bots)

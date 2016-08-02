@@ -8,21 +8,21 @@ from .base import BasePoller
 
 
 class OnlinerPoller(BasePoller):
-    def __init__(self, config, name):
+    def __init__(self, config, storage):
         self.config = config
-        self.name = name
+        self.storage = storage
 
     @property
     def storage_path(self):
-        return path.join(self.config['storage'], self.name)
+        return path.join(self.storage, self.config['name'])
 
     @property
     def request_config(self):
-        return copy.deepcopy(self.config['pollers'][self.name]['request'])
+        return copy.deepcopy(self.config['request'])
 
     @property
     def api_url(self):
-        return self.config['pollers'][self.name]['api_url']
+        return self.config['api_url']
 
     def poll(self, announce_fn):
         def save(data):
@@ -50,7 +50,7 @@ class OnlinerPoller(BasePoller):
                     h_a = next((h_a for h_a in h_apparments if h_a['id'] == a['id']), None)
                     if h_a is None:
                         h_apparments.append(a)
-                        announce_fn('{photo}, USD: {price[usd]}, {created_at}, "{location[address]}", {url}, #{id}'.format(**a), self.name)
+                        announce_fn('{photo}, USD: {price[converted][USD][amount]}, {created_at}, "{location[address]}", {url}, #{id}'.format(**a), self.config['name'])
             else:
                 logging.warn('invalid response code: %d' % r.status_code)
                 break

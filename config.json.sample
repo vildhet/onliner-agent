@@ -1,37 +1,21 @@
 {
-  "pollers": {
-    "onliner-sell": {
-      "request": {
-        "currency": "usd",
-        "price[min]": 10000,
-        "price[max]": 45000,
-        "number_of_rooms[]": [2, 3],
-        "walling[]": ["brick", "monolith", "block"],
-        "bounds[lb][lat]": 53.80957154683726,
-        "bounds[lb][long]": 27.455520629882812,
-        "bounds[rt][lat]": 53.985568980647656,
-        "bounds[rt][long]": 27.665977478027344
-      },
-
-      "api_url": "https://pk.api.onliner.by/search/apartments"
-    },
-
-    "onliner-rent": {
+  "pollers": [
+    {
+      "name": "rent1",
       "request": {
         "currency": "usd",
         "price[min]": 100,
-        "price[max]": 450,
-        "rent_type[]": ["2_rooms", "3_rooms"],
+        "price[max]": 300,
+        "rent_type[]": ["1_room", "2_rooms"],
         "bounds[lb][lat]": 53.80957154683726,
         "bounds[lb][long]": 27.455520629882812,
         "bounds[rt][lat]": 53.985568980647656,
         "bounds[rt][long]": 27.665977478027344,
         "only_owner": "true"
       },
-
       "api_url": "https://ak.api.onliner.by/search/apartments"
     }
-  },
+  ],
   "bots": {
     "telegram": {
       "token": "PUT_TOKEN_HERE"
